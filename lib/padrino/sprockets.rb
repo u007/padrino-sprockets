@@ -48,6 +48,7 @@ module Padrino
 
     class App
       attr_reader :assets
+      attr_reader :matcher
 
       def initialize(app, options={})
         @app = app
