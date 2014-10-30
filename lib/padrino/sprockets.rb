@@ -59,9 +59,9 @@ module Padrino
 
       def setup_environment(minify=false, extra_paths=[])
         @assets = ::Sprockets::Environment.new(@root)
-        @assets.append_path 'assets/javascripts'
-        @assets.append_path 'assets/stylesheets'
-        @assets.append_path 'assets/images'
+        # @assets.append_path 'assets/javascripts'
+        # @assets.append_path 'assets/stylesheets'
+        # @assets.append_path 'assets/images'
 
         if minify
           if defined?(YUI)
