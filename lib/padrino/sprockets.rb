@@ -18,12 +18,10 @@ module Padrino
     module Helpers
       module ClassMethods
         def sprockets(options={})
-          url   = options[:url] || 'assets'
+
           _root = options[:root] || root
           paths = options[:paths] || []
-          set :sprockets_url, url
           options[:root] = _root
-          options[:url] = url
           options[:paths] = paths
           use Padrino::Sprockets::App, options
         end
@@ -32,9 +30,12 @@ module Padrino
       module AssetTagHelpers
         # Change the folders to /assets/
         def asset_folder_name(kind)
+          logger.info "including asset of kind: #{kind}" if settings.assets_debug
           case kind
-          when :css then 'assets'
-          when :js  then 'assets'
+          when :font then settings.assets_url
+          when :css then settings.assets_url
+          when :js  then settings.assets_url
+          when :image  then settings.assets_url
           else kind.to_s
           end
         end
@@ -52,17 +53,19 @@ module Padrino
 
       def initialize(app, options={})
         @app = app
-        @root = options[:root]
-        url   =  options[:url] || 'assets'
+        @root = options[:root] || Padrino.root
+        url = app.settings.assets_url
+        logger.info "root: #{@root}, asset-url: #{url}" if @app.settings.assets_debug
         @matcher = /^\/#{url}\/*/
         setup_environment(options[:minify], options[:paths] || [])
       end
 
       def setup_environment(minify=false, extra_paths=[])
-        @assets = ::Sprockets::Environment.new(@root)
-        # @assets.append_path 'assets/javascripts'
-        # @assets.append_path 'assets/stylesheets'
-        # @assets.append_path 'assets/images'
+        @assets = ::Sprockets::Environment.new
+        @assets.append_path 'app/assets/javascripts'
+        @assets.append_path 'app/assets/stylesheets'
+        @assets.append_path 'vendor/assets/javascripts'
+        @assets.append_path 'vendor/assets/stylesheets'
 
         if minify
           if defined?(YUI)
@@ -83,8 +86,10 @@ module Padrino
       end
 
       def call(env)
+        logger.info "accessing: #{env["PATH_INFO"]}" if @app.settings.assets_debug
         if @matcher =~ env["PATH_INFO"]
           env['PATH_INFO'].sub!(@matcher,'')
+          logger.info "matched: #{env['PATH_INFO'].inspect}" if @app.settings.assets_debug
           @assets.call(env)
         else
           @app.call(env)

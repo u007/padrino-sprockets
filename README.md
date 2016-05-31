@@ -16,7 +16,22 @@ Or include it in your project's `Gemfile` with Bundler:
 gem 'padrino-sprockets', :require => "padrino/sprockets"
 ```
 
+
 ## Usage
+
+Inside config/apps.rb
+
+```ruby
+if RACK_ENV == 'production'
+  set :assets_url, 'assets'
+  set :assets_debug, false
+  # set :show_exceptions, false
+else
+  set :assets_url, 'dev-assets'
+  set :assets_debug, false
+  # set :show_exceptions, true
+end
+```
 
 Place your assets under these paths:
 
@@ -31,7 +46,7 @@ Register sprockets in your application:
 ```ruby
 class Redstore < Padrino::Application
   register Padrino::Sprockets
-  sprockets  # :url => 'assets', :root => app.root
+  sprockets
 end
 ```
 
