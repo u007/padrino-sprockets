@@ -83,8 +83,7 @@ For more documentation about sprockets, have a look at the [Sprockets](https://g
 ### sprockets
 
 ```ruby
-:root =>  'asset root' # default is app.root
-:url => 'assets'  # default map url, location, default is 'assets'
+:minify => true / false
 ```
 
 ## Contributors
