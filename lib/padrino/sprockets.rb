@@ -30,7 +30,7 @@ module Padrino
       module AssetTagHelpers
         # Change the folders to /assets/
         def asset_folder_name(kind)
-          logger.info "including asset of kind: #{kind}" if settings.assets_debug
+          # logger.info "including asset of kind: #{kind}" if settings.assets_debug
           case kind
           when :font then settings.assets_url
           when :css then settings.assets_url
@@ -68,15 +68,12 @@ module Padrino
         @assets.append_path 'vendor/assets/stylesheets'
 
         if minify
-          if defined?(YUI)
-            @assets.css_compressor = YUI::CssCompressor.new
-          else
-            puts "Add yui-compressor to your Gemfile to enable css compression"
-          end
+          @assets.css_compressor = :scss
           if defined?(Uglifier)
-            @assets.register_postprocessor "application/javascript", ::Sprockets::JSMinifier
+            @assets.js_compressor = :uglify
+            # @assets.register_postprocessor "application/javascript", ::Sprockets::JSMinifier
           else
-            puts "Add uglifier to your Gemfile to enable js minification"
+            logger.error "Add uglifier to your Gemfile to enable js minification"
           end
         end
 
