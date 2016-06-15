@@ -25,10 +25,13 @@ Inside config/apps.rb
 if RACK_ENV == 'production'
   set :assets_url, 'assets'
   set :assets_debug, false
+  set :assets_compile, false
+  # set :assets_path, Padrino.root('public/assets')
   # set :show_exceptions, false
 else
-  set :assets_url, 'dev-assets'
-  set :assets_debug, false
+  set :assets_url, 'assets'
+  set :assets_debug, true
+  set :assets_compile, true # if this is set to true, ignore precompiled assets
   # set :show_exceptions, true
 end
 ```
@@ -49,6 +52,23 @@ class Redstore < Padrino::Application
   sprockets
 end
 ```
+
+To precompile assets:
+
+```
+bundle exec rake assets:precompile
+```
+
+To clean up assets:
+```
+bundle exec rake assets:clean
+```
+
+To delete assets output path:
+```
+bundle exec rake assets:clobber
+```
+
 
 Now when requesting a path like `/assets/application.js` it will look for a source file in one of these locations :
 

@@ -52,7 +52,7 @@ module Padrino
         @asset_env.append_path 'vendor/assets/javascripts'
         @asset_env.append_path 'vendor/assets/stylesheets'
 
-        @asset_path = app.settings.assets_path || ""
+        @asset_path = app.settings.assets_path || Padrino.root("public/assets")
         @minify = true
 
         if @minify
