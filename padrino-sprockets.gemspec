@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.version = Padrino::Sprockets::VERSION
   gem.description = "Padrino with Sprockets"
   gem.summary = gem.description
-  gem.authors = ["Night Sailer, Matthias Günther", "James Ran"]
+  gem.authors = ["Night Sailer, Matthias Günther", "James Tan"]
   gem.email = ["nightsailer@gmail.com, matthias.guenther@wikimatze.de, james@mercstudio.com"]
   gem.date = Time.now.strftime '%Y-%m-%d'
   gem.homepage = "https://github.com/nightsailer/padrino-sprockets"
