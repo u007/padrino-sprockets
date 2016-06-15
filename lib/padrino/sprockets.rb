@@ -58,6 +58,9 @@ module Padrino
         logger.info "root: #{@root}, asset-url: #{url}" if @app.settings.assets_debug
         @matcher = /^\/#{url}\/*/
         setup_environment(options[:minify], options[:paths] || [])
+
+        Padrino::Tasks.files << Dir[File.dirname(__FILE__) + '/tasks/**/*.rake']
+
       end
 
       def setup_environment(minify=false, extra_paths=[])
@@ -101,3 +104,6 @@ module Padrino
     end
   end #Sprockets
 end #Padrino
+
+
+Padrino::Tasks.files << Dir[File.dirname(__FILE__) + '/tasks/*.rake']
