@@ -1,4 +1,5 @@
 # encoding: utf-8
+require "sprockets/helpers"
 # require "padrino-helpers"
 require "sprockets"
 require "tilt"
@@ -58,7 +59,7 @@ module Padrino
         @app = app
         # puts "root: #{Padrino.root}"
         @root = options[:root] || Padrino.root
-        @asset_path = app.settings.assets_path || Padrino.root("public/assets")
+        @asset_path = app.settings.assets_path || Padrino.root(app.settings.public_folder+"/assets")
         @compile = app.settings.assets_compile.nil? ? true: app.settings.assets_compile
         url = app.settings.assets_url
         logger.info "root: #{@root}, asset-url: #{url}" if app.settings.assets_debug
@@ -66,16 +67,30 @@ module Padrino
         @asset_env = Sprockets.setup_environment(app, options[:minify], options[:paths] || [])
         @manifest = ::Sprockets::Manifest.new(@asset_env, "#{@asset_path}/manifest.json")
 
-        logger.info "loaded sprockets rake"
+        # logger.info "loaded sprockets rake"
         Padrino::Tasks.files << Dir[File.dirname(__FILE__) + '/tasks/**/*.rake']
         Padrino::Tasks.files << Dir[File.dirname(__FILE__) + '/tasks/*.rake']
+
+        # cannot use this
+        ::Sprockets::Helpers.configure do |config|
+          config.environment = @asset_env
+          config.prefix      = app.settings.assets_url
+          config.digest      = true
+          config.public_path = app.settings.public_folder
+
+          # Force to debug mode in development mode
+          # Debug mode automatically sets
+          # expand = true, digest = false, manifest = false
+          config.debug       = app.settings.assets_compile
+        end
+
       end
 
       def call(env)
         logger.info "accessing: #{env["PATH_INFO"]}" if @app.settings.assets_debug
         if @matcher =~ env["PATH_INFO"]
           uri = env['PATH_INFO'].to_s # for some weird reason env['path_info'] is persisted in uri
-          logger.info "matched: #{uri}" if @app.settings.assets_debug
+          # logger.info "matched: #{uri}" if @app.settings.assets_debug
           # PryDebug.start_pry binding
           # binding.pry
           if !@compile
@@ -102,7 +117,7 @@ module Padrino
             if res[0] == 200
               return res
             else
-              # env['PATH_INFO'] = uri
+              env['PATH_INFO'] = "/"+env['PATH_INFO']
               logger.info "fallback: #{env['PATH_INFO']}" if @app.settings.assets_debug
               # not exists, use public
               return @app.call(env)

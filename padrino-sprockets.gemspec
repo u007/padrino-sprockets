@@ -17,5 +17,6 @@ Gem::Specification.new do |gem|
     'lib/padrino/sprockets.rb'
     ]
   gem.add_dependency 'sprockets'
+  gem.add_dependency 'sprockets-helpers'
   gem.add_dependency 'coffee-script', '~> 2.4'
 end
