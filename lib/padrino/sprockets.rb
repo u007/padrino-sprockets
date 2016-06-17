@@ -63,7 +63,7 @@ module Padrino
         @compile = app.settings.assets_compile.nil? ? true: app.settings.assets_compile
         url = app.settings.assets_url
         logger.info "root: #{@root}, asset-url: #{url}" if app.settings.assets_debug
-        @matcher = /^\/#{url}\/*/
+        @matcher = /^#{url}\/*/
         @asset_env = Sprockets.setup_environment(app, options[:minify], options[:paths] || [])
         @manifest = ::Sprockets::Manifest.new(@asset_env, "#{@asset_path}/manifest.json")
 
@@ -207,10 +207,14 @@ module Padrino
 
       def setup_environment(app, minify=false, extra_paths=[])
         @env = ::Sprockets::Environment.new
+        @env.append_path 'app/assets/images'
+        @env.append_path 'app/assets/fonts'
         @env.append_path 'app/assets/javascripts'
         @env.append_path 'app/assets/stylesheets'
         @env.append_path 'vendor/assets/javascripts'
         @env.append_path 'vendor/assets/stylesheets'
+        @env.append_path 'vendor/assets/images'
+        @env.append_path 'vendor/assets/fonts'
 
         if minify
           @env.css_compressor = :scss

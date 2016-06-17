@@ -22,14 +22,15 @@ gem 'padrino-sprockets', :require => "padrino/sprockets"
 Inside config/apps.rb
 
 ```ruby
+# prefix / is important for assets_url
 if RACK_ENV == 'production'
-  set :assets_url, 'assets'
+  set :assets_url, '/assets'
   set :assets_debug, false
   set :assets_compile, false
   # set :assets_path, Padrino.root('public/assets')
   # set :show_exceptions, false
 else
-  set :assets_url, 'assets'
+  set :assets_url, '/assets'
   set :assets_debug, true
   set :assets_compile, true # if this is set to true, ignore precompiled assets
   # set :show_exceptions, true
