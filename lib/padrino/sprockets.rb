@@ -240,7 +240,7 @@ module Padrino
 
       def environment
         if @env.nil?
-          @env = setup_environment(Padrino.mounted_apps[0])
+          @env = setup_environment(Padrino.mounted_apps[0].app_obj)
         end
         @env
       end
