@@ -83,6 +83,9 @@ module Padrino
           config.debug       = app.settings.assets_debug
         end
 
+        ::Sprockets.register_mime_type 'riot/tag', extensions: ['.tag'], charset: :unicode
+        ::Sprockets.register_transformer 'riot/tag', 'application/javascript', ::Padrino::Processor::RiotProcessor
+        # Sprockets.register_preprocessor('application/javascript', Padrino::Processor::Riot.new)
       end
 
       def call(env)

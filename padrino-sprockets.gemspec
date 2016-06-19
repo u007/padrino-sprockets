@@ -14,7 +14,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.files = [
     'lib/padrino/sprockets-version.rb',
-    'lib/padrino/sprockets.rb'
+    'lib/padrino/sprockets.rb',
+    'lib/padrino/processor/riot_processor.rb'
     ]
   gem.add_dependency 'sprockets'
   gem.add_dependency 'sprockets-helpers'
