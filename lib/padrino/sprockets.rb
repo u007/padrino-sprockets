@@ -32,7 +32,7 @@ module Padrino
       module AssetTagHelpers
         # Change the folders to /assets/
         def asset_folder_name(kind)
-          # logger.info "including asset of kind: #{kind}" if settings.assets_debug
+          logger.info "including kind: #{kind}" if settings.assets_debug
           case kind
           when :font then settings.assets_url
           when :css then settings.assets_url
@@ -81,7 +81,7 @@ module Padrino
           # Force to debug mode in development mode
           # Debug mode automatically sets
           # expand = true, digest = false, manifest = false
-          config.debug       = app.settings.assets_compile
+          config.debug       = app.settings.assets_debug
         end
 
       end
@@ -114,9 +114,10 @@ module Padrino
             # compile from paths
             res = @asset_env.call(env)
             # logger.info "lookup: #{uri}: #{res.inspect}"
-            if res[0] == 200
+            if res[0] == 200 || res[0] = 304 # no change
               return res
             else
+              logger.error "failed sprocket: #{res.inspect}" if @app.settings.assets_debug
               env['PATH_INFO'] = "/"+env['PATH_INFO']
               logger.info "fallback: #{env['PATH_INFO']}" if @app.settings.assets_debug
               # not exists, use public
@@ -207,14 +208,12 @@ module Padrino
 
       def setup_environment(app, minify=false, extra_paths=[])
         @env = ::Sprockets::Environment.new
-        @env.append_path 'app/assets/images'
-        @env.append_path 'app/assets/fonts'
+        @env.append_path 'app/assets'
         @env.append_path 'app/assets/javascripts'
         @env.append_path 'app/assets/stylesheets'
         @env.append_path 'vendor/assets/javascripts'
         @env.append_path 'vendor/assets/stylesheets'
-        @env.append_path 'vendor/assets/images'
-        @env.append_path 'vendor/assets/fonts'
+        @env.append_path 'vendor/assets'
 
         if minify
           @env.css_compressor = :scss
