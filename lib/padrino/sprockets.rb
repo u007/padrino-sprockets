@@ -32,7 +32,7 @@ module Padrino
       module AssetTagHelpers
         # Change the folders to /assets/
         def asset_folder_name(kind)
-          logger.info "including kind: #{kind}" if settings.assets_debug
+          # logger.info "including kind: #{kind}" if settings.assets_debug
           case kind
           when :css then settings.assets_url
           when :js  then settings.assets_url
@@ -207,12 +207,14 @@ module Padrino
 
       def setup_environment(app, minify=false, extra_paths=[])
         @env = ::Sprockets::Environment.new
-        @env.append_path 'app/assets'
+        @env.append_path 'app/assets/fonts'
+        @env.append_path 'app/assets/images'
         @env.append_path 'app/assets/javascripts'
         @env.append_path 'app/assets/stylesheets'
         @env.append_path 'vendor/assets/javascripts'
         @env.append_path 'vendor/assets/stylesheets'
-        @env.append_path 'vendor/assets'
+        @env.append_path 'vendor/assets/fonts'
+        @env.append_path 'vendor/assets/images'
 
         if minify
           @env.css_compressor = :scss
