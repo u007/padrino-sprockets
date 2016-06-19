@@ -34,10 +34,8 @@ module Padrino
         def asset_folder_name(kind)
           logger.info "including kind: #{kind}" if settings.assets_debug
           case kind
-          when :font then settings.assets_url
           when :css then settings.assets_url
           when :js  then settings.assets_url
-          when :image  then settings.assets_url
           else kind.to_s
           end
         end
@@ -77,6 +75,7 @@ module Padrino
           config.prefix      = app.settings.assets_url
           config.digest      = true
           config.public_path = app.settings.public_folder
+          # config.magnifest   = @manifest
 
           # Force to debug mode in development mode
           # Debug mode automatically sets
