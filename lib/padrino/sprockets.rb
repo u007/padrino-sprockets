@@ -2,7 +2,7 @@
 require "sprockets/helpers"
 # require "padrino-helpers"
 require "sprockets"
-require "lib/padrino/processor/riot_processor"
+require "padrino/processor/riot_processor"
 require "tilt"
 
 module Sprockets
@@ -84,8 +84,18 @@ module Padrino
           config.debug       = app.settings.assets_debug
         end
 
-        ::Sprockets.register_mime_type 'riot/tag', extensions: ['.tag'], charset: :unicode
-        ::Sprockets.register_transformer 'riot/tag', 'application/javascript', ::Padrino::Processor::RiotProcessor
+        ::Sprockets.register_mime_type 'text/riot-tag', extensions: ['.tag.js']#, charset: :unicode
+        ::Sprockets.register_transformer 'text/riot-tag', 'application/javascript', ::Padrino::Processor::RiotProcessor
+
+        # @asset_env.resolve_transform_type('text/riot-tag', 'application/javascript')
+        # ::Sprockets.register_preprocessor('text/riot-tag', ::Padrino::Processor::RiotProcessor)
+
+        # ::Sprockets.register_bundle_processor  'application/javascript', ::Padrino::Processor::RiotProcessor #::Sprockets::DirectiveProcessor
+        # require 'sprockets/erb_processor'
+        # ::Sprockets::Transformers.register_transformer_suffix(%w(
+        #   riot/tag
+        # ), 'application/\2+ruby', '.erb', ::Sprockets::ERBProcessor)
+
         # Sprockets.register_preprocessor('application/javascript', Padrino::Processor::Riot.new)
       end
 

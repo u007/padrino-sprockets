@@ -6,9 +6,9 @@ module Padrino
         name: 'Node.js (V8)',
         command: ['nodejs', 'node'],
         encoding: 'UTF-8',
-        runner_path: File.expand_path('../../support/riot_node_runner.js', __FILE__),
+        runner_path: File.expand_path('../../../support/riot_node_runner.js', __FILE__),
       )
-      COMPILER_PATH = File.expand_path('../../support/riot_compiler.js', __FILE__)
+      COMPILER_PATH = File.expand_path('../../../support/riot_compiler.js', __FILE__)
       VERSION = '1'
 
       def self.cache_key
@@ -27,8 +27,6 @@ module Padrino
         map = SourceMapUtils.combine_source_maps(input[:metadata][:map], map)
         { data: js, map: map }
       end
-
-
 
       def compile(source_code)
         source_code = escape_javascript(source_code)
