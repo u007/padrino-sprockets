@@ -2,6 +2,7 @@
 require "sprockets/helpers"
 # require "padrino-helpers"
 require "sprockets"
+require "lib/padrino/processor/riot_processor"
 require "tilt"
 
 module Sprockets
