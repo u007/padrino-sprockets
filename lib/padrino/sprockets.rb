@@ -84,8 +84,9 @@ module Padrino
           config.debug       = app.settings.assets_debug
         end
 
-        ::Sprockets.register_mime_type 'text/riot-tag', extensions: ['.tag.js']#, charset: :unicode
+        ::Sprockets.register_mime_type 'text/riot-tag', extensions: ['.tag']#, charset: :unicode
         ::Sprockets.register_transformer 'text/riot-tag', 'application/javascript', ::Padrino::Processor::RiotProcessor
+        ::Sprockets.register_preprocessor 'text/riot-tag', ::Sprockets::DirectiveProcessor.new(comments: ["//", ["/*", "*/"]])
 
         # @asset_env.resolve_transform_type('text/riot-tag', 'application/javascript')
         # ::Sprockets.register_preprocessor('text/riot-tag', ::Padrino::Processor::RiotProcessor)
