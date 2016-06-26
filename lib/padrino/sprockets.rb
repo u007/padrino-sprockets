@@ -5,6 +5,8 @@ require "sprockets"
 require "padrino/processor/riot_processor"
 require "tilt"
 
+Dir.glob(File.dirname(__FILE__)+'/tasks/*.rake').each { |r| import r }
+
 module Sprockets
   class JSMinifier < Tilt::Template
     def prepare

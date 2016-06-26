@@ -1,3 +1,5 @@
+require "execjs"
+
 module Padrino
   module Processor
     class RiotProcessor

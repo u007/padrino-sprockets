@@ -11,7 +11,7 @@ namespace :assets do
     # puts "running on #{apps.inspect}"
     apps.each do |app|
       app = app.app_obj
-      task = Padrino::Sprockets::Task.new(app)
+      task = Padrino::Sprockets::PrecompileTask.new(app)
       task.compile
     end
   end
@@ -19,7 +19,7 @@ namespace :assets do
   task :clean => :environment do
     apps.each do |app|
       app = app.app_obj
-      task = Padrino::Sprockets::Task.new(app)
+      task = Padrino::Sprockets::PrecompileTask.new(app)
       task.clean
     end
   end
@@ -27,7 +27,7 @@ namespace :assets do
   task :compress => :environment do
     apps.each do |app|
       app = app.app_obj
-      task = Padrino::Sprockets::Task.new(app)
+      task = Padrino::Sprockets::PrecompileTask.new(app)
       task.compress
     end
   end
@@ -35,15 +35,15 @@ namespace :assets do
   task :clobber => :environment do
     apps.each do |app|
       app = app.app_obj
-      task = Padrino::Sprockets::Task.new(app)
+      task = Padrino::Sprockets::PrecompileTask.new(app)
       task.clobber
     end
   end
-end
+end # namespace
 
 module Padrino
   module Sprockets
-    class Task < Rake::TaskLib
+    class PrecompileTask < Rake::TaskLib
       def initialize(app)
         @app = app
         @asset_env = ::Sprockets::Environment.new
@@ -68,7 +68,6 @@ module Padrino
       end#initialize
 
       def compile
-
         puts "compiling to: #{@asset_path}"
         @manifest.compile(@app.settings.assets_precompile)
       end
@@ -80,9 +79,10 @@ module Padrino
 
       def compress
         @manifest.assets.each do |asset, digested_asset|
-        if asset = @asset_env[asset]
-          compressed_asset = File.join(manifest.dir, digested_asset)
-          asset.write_to(compressed_asset + '.gz') if compressed_asset =~ /\.(?:css|html|js|svg|txt|xml)$/
+          if asset = @asset_env[asset]
+            compressed_asset = File.join(manifest.dir, digested_asset)
+            asset.write_to(compressed_asset + '.gz') if compressed_asset =~ /\.(?:css|html|js|svg|txt|xml)$/
+          end
         end
       end
 
@@ -91,8 +91,7 @@ module Padrino
         # FileUtils.rm_rf(@asset_path)
       end
 
+    end # PrecompileTask
 
-    end#task
-
-  end
-end
+  end # Sprockets
+end # Padrino
