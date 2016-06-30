@@ -103,7 +103,7 @@ module Padrino
       end
 
       def call(env)
-        logger.info "accessing: #{env["PATH_INFO"]}" if @app.settings.assets_debug
+        # logger.info "accessing: #{env["PATH_INFO"]}" if @app.settings.assets_debug
         if @matcher =~ env["PATH_INFO"]
           uri = env['PATH_INFO'].to_s # for some weird reason env['path_info'] is persisted in uri
           # logger.info "matched: #{uri}" if @app.settings.assets_debug
@@ -113,7 +113,7 @@ module Padrino
             # dont compile
             path_info = env['PATH_INFO'].sub(@matcher,'')
             ori_file = Rack::Utils.unescape(path_info.to_s.sub(/^\//, ''))
-            logger.info "name: #{ori_file.inspect}" if @app.settings.assets_debug
+            # logger.info "name: #{ori_file.inspect}" if @app.settings.assets_debug
             path = @manifest.assets[ori_file]
             if path
               if env['REQUEST_METHOD'] != 'GET'
