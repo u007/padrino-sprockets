@@ -62,7 +62,7 @@ module Padrino
         @root = options[:root] || Padrino.root
         @asset_path = app.settings.assets_path || Padrino.root(app.settings.public_folder+"/assets")
         @compile = app.settings.assets_compile.nil? ? true: app.settings.assets_compile
-        url = app.settings.assets_url
+        url = @asset_url = app.settings.assets_url
         logger.info "root: #{@root}, asset-url: #{url}" if app.settings.assets_debug
         @matcher = /^#{url}\/*/
         @asset_env = Sprockets.setup_environment(app, options[:minify], options[:paths] || [])
@@ -129,19 +129,26 @@ module Padrino
             env['PATH_INFO'].sub!(@matcher,'')
             # compile from paths
             res = @asset_env.call(env)
-            # logger.info "lookup: #{uri}: #{res.inspect}"
-            if res[0] == 200 || res[0] = 304 # no change
+            # logger.info "lookup: #{uri}: #{res[0].inspect}" if @app.settings.assets_debug
+            if res[0] == 200 || res[0] == 304 # no change
+              # logger.info "is 200 or 304"
               return res
             else
-              logger.error "failed sprocket: #{res.inspect}" if @app.settings.assets_debug
-              env['PATH_INFO'] = "/"+env['PATH_INFO']
-              logger.info "fallback: #{env['PATH_INFO']}" if @app.settings.assets_debug
+              # reprepend assets url
+              env['PATH_INFO'] = @asset_url +"/" + env['PATH_INFO']
+              # logger.info "failed sprocket: #{res[0].inspect}, falling back: #{env['PATH_INFO'].inspect}" if @app.settings.assets_debug
+              res = @app.call(env)
+              if res[0] != 200 && res[0] != 304
+                logger.error "fallback failed: #{res[0].inspect}" if @app.settings.assets_debug
+              end
+              # logger.info "fallback: #{res.inspect}" if @app.settings.assets_debug
               # not exists, use public
-              return @app.call(env)
+              return res
             end
           end
 
         else
+          logger.info "normal: #{env['PATH_INFO']}"
           @app.call(env)
         end
       end
